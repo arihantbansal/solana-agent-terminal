@@ -1,15 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Terminal, Send } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Chat() {
   const [messages, setMessages] = useState<Array<{ role: string, content: string }>>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,8 +51,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white font-mono">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#111111] text-white font-mono flex flex-col">
+      <div className="container mx-auto px-4 py-8 flex-grow">
         <Card className="w-full max-w-4xl mx-auto bg-[#1A1A1A] border-[#333] shadow-2xl">
           <CardHeader className="border-b border-[#333]">
             <div className="flex items-center space-x-2">
@@ -88,6 +98,7 @@ export default function Chat() {
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
           </CardContent>
           <CardFooter className="border-t border-[#333] p-4">
@@ -109,6 +120,16 @@ export default function Chat() {
           </CardFooter>
         </Card>
       </div>
+      <footer className="bg-[#1A1A1A] border-t border-[#333] py-4 text-center text-sm text-[#787B7E]">
+        powered by{' '}
+        <Link href="https://www.solanaagentkit.xyz/" className="text-[#1BE1FF] hover:underline" target="_blank" rel="noopener noreferrer">
+          Solana Agent Kit
+        </Link>
+        {' '}by{' '}
+        <Link href="https://x.com/sendaifun" className="text-[#1BE1FF] hover:underline" target="_blank" rel="noopener noreferrer">
+          SEND AI
+        </Link>
+      </footer>
     </div>
   )
 }
