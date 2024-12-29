@@ -6,6 +6,7 @@ import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
 import { validateEnvironment } from "@/lib/utils";
+import bs58 from "bs58";
 
 async function initializeAgent() {
   const llm = new ChatOpenAI({
@@ -16,7 +17,7 @@ async function initializeAgent() {
   validateEnvironment();
 
   const solanaAgent = new SolanaAgentKit(
-    process.env.SOLANA_PRIVATE_KEY!,
+    bs58.encode(Uint8Array.from(JSON.parse(process.env.SOLANA_PRIVATE_KEY!))),
     process.env.RPC_URL!,
     process.env.OPENAI_API_KEY!,
   );
